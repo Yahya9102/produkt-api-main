@@ -71,7 +71,6 @@ class ProductServiceTest {
 
 
 
-
     @Test
     public void testGetProductsByCategoryReturnsProductInCategory() {
         // Given Skapar en produkt och sätter dess kategori till "hello".
@@ -131,7 +130,7 @@ class ProductServiceTest {
         // Skapar en ny produkt
         Product product = new Product("Dator", 3.4, "hej", "", "");
 
-        // when
+        // when lägger till produkten
         underTest.addProduct(product);
 
         // then
@@ -260,12 +259,11 @@ class ProductServiceTest {
 
         //when anropar findById() med id och returnerar en optional som innehåller den uppdaterade produkten
         when(repository.findById(id)).thenReturn(Optional.of(updatedProduct));
-        //sparar uppdaterad produkt till databasen
 
+        //sparar uppdaterad produkt till databasen
         when(repository.save(updatedProduct)).thenReturn(updatedProduct);
 
 
-        // When
         Product result = underTest.updateProduct(updatedProduct, id);
 
         // Then:jämför den nya titeln med den förväntade titeln "Dator"
@@ -281,9 +279,10 @@ class ProductServiceTest {
         // Given: skapar ett scenario där produkten med angivet id inte finns i databasen
 
         Integer id = 1;
+        // When
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        // When och then - förväntar oss att en EntityNotFoundException kommer
+        // then - förväntar oss att en EntityNotFoundException kommer
         // att kastas när vi försöker uppdatera en produkt som inte finns
         assertThrows(EntityNotFoundException.class, () -> {
             underTest.updateProduct(new Product(), id);
