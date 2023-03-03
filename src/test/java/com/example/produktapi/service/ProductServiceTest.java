@@ -67,10 +67,6 @@ class ProductServiceTest {
 
 
 
-
-
-
-
     @Test
     public void testGetProductsByCategoryReturnsProductInCategory() {
         // Given Skapar en produkt och sätter dess kategori till "hello".
