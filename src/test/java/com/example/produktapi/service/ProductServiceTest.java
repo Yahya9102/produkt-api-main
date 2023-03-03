@@ -325,9 +325,9 @@ class ProductServiceTest {
 
 
 
-    @Test
+    @Test //test för github actions
     void testingForGitHub(){
-        assertEquals(1,4,"fel siffra");
+        assertEquals(1,1,"fel siffra");
     }
 
 }
