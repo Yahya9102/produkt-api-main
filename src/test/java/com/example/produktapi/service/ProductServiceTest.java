@@ -159,7 +159,6 @@ class ProductServiceTest {
 
 
 
-
     @Test
     void getProductByIdTest(){
         //given
@@ -325,5 +324,10 @@ class ProductServiceTest {
 
 
 
+
+    @Test
+    void testingForGitHub(){
+        assertEquals(1,4,"fel siffra");
+    }
 
 }
