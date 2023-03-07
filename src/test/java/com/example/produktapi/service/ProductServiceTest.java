@@ -53,8 +53,7 @@ class ProductServiceTest {
     void testGetAllCategories() {
 
         //when
-        //kallar på metoden som ska testas
-
+        //kallar på metoden getAllCategories
         underTest.getAllCategories();
 
         //then
@@ -214,37 +213,36 @@ class ProductServiceTest {
         Product updatedProduct = new Product("Ny dator", 6.2, "hejsan", "", "");
         updatedProduct.setId(1);
 
-        // Sätter upp ett scenario där save-metoden anropas med den uppdaterade produkten och returnerar den uppdaterade produkten.
-        when(repository.save(any())).thenReturn(updatedProduct);
 
         // When: anropar metoden updateProduct på productService med de uppdaterade produkten och ID:et som parameter
-        Product result = underTest.updateProduct(updatedProduct, 1);
+        underTest.updateProduct(updatedProduct, 1);
+
+        verify(repository, times(1)).save(productCaptor.capture());
 
         // Then: Kollar att det uppdaterade resultatet är samma som den nya uppdaterade produkten.
-        assertEquals(updatedProduct, result);
+        assertEquals(updatedProduct,productCaptor.getValue());
     }
 
 
 
 
-    @Test
+  @Test
     public void testUpdateProductDoesNotUpdateIfProductNotFound() {
-        // Given
-        // Skapar en ny produkt
+        // Given Skapa en ny produkt med namnet "Dator",
+        //Sätt produktens id till 1.
         Product updatedProduct = new Product("Dator", 5.6, "hej", "", "");
         Integer id = 1;
 
         // When
         // När repository-metoden findById anropas med ett visst id,
         // returnera en optional som innehåller en ny produkt.
-        when(repository.findById(id)).thenReturn(Optional.of(new Product()));
-        when(repository.save(any())).thenReturn(null);
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
 
         // Then
-        // Vi validerar att metoden updateProduct returnerar null när den inte hittar produkten.
-        assertNull(underTest.updateProduct(updatedProduct, id));
+      EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> underTest.updateProduct(updatedProduct,id));
+        assertEquals("Produkt med id 1 hittades inte",exception.getMessage());
     }
-
 
 
 

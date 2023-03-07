@@ -49,13 +49,13 @@ public class ProductService {
     }
 
 
-    //vilka delar saknas???
+
     public Product updateProduct(Product updatedProduct, Integer id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
              throw new EntityNotFoundException(id);
         }
-        return productRepository.save(product.get());
+        return productRepository.save(updatedProduct);
     }
     public void deleteProduct(Integer id) {
 
