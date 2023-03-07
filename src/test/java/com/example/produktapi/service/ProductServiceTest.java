@@ -203,19 +203,22 @@ class ProductServiceTest {
 
     @Test
     public void testUpdateProductSavesUpdatedProduct() {
-        // Given
-        // Skapar en ny uppdaterad produkt och tilldelar id 1
-        Product updatedProduct = new Product("Dator", 5.6, "hej", "", "");
-        Integer id = 1;
+        // Given: Skapar en ny produkt och ger den ID 1
+        Product initialProduct = new Product("Dator", 5.6, "hej", "", "");
+        initialProduct.setId(1);
 
-        // Sätter upp ett scenario där findById-metoden anropas med id 1 och returnerar en valfri produkt från databasen
-        when(repository.findById(id)).thenReturn(Optional.of(new Product()));
+        // Sätter upp ett scenario där findById-metoden anropas med id 1 och returnerar den initiala produkten från databasen
+        when(repository.findById(1)).thenReturn(Optional.of(initialProduct));
 
-        // Sätter upp ett scenario där save-metoden anropas med en valfri produkt och returnerar den uppdaterade produkten.
+        // Skapar en ny uppdaterad produkt med samma ID som den initiala produkten
+        Product updatedProduct = new Product("Ny dator", 6.2, "hejsan", "", "");
+        updatedProduct.setId(1);
+
+        // Sätter upp ett scenario där save-metoden anropas med den uppdaterade produkten och returnerar den uppdaterade produkten.
         when(repository.save(any())).thenReturn(updatedProduct);
 
-        // When: anropar metoden updateProduct på productService med de uppdaterade produkt och id som parameter
-        Product result = underTest.updateProduct(updatedProduct, id);
+        // When: anropar metoden updateProduct på productService med de uppdaterade produkten och ID:et som parameter
+        Product result = underTest.updateProduct(updatedProduct, 1);
 
         // Then: Kollar att det uppdaterade resultatet är samma som den nya uppdaterade produkten.
         assertEquals(updatedProduct, result);
@@ -232,8 +235,8 @@ class ProductServiceTest {
         Integer id = 1;
 
         // When
-        // Sätter upp ett scenario där man försöker hitta id med findById,
-        // sedan ska den returnera en ny product
+        // När repository-metoden findById anropas med ett visst id,
+        // returnera en optional som innehåller en ny produkt.
         when(repository.findById(id)).thenReturn(Optional.of(new Product()));
         when(repository.save(any())).thenReturn(null);
 
@@ -249,22 +252,23 @@ class ProductServiceTest {
 
     @Test
     public void testUpdateProductTitleUpdatesTitle() {
-        // Given: skapar en uppdaterad produkt och sätter ett ID
-        Product updatedProduct = new Product("Dator", 3.4, "hej", "", "");
+        // Given: skapar en produkt med ett ID och titeln "Dator"
+        Product product = new Product("Dator", 3.4, "hej", "", "");
         Integer id = 1;
 
+        //when anropar findById() med id och returnerar en optional som innehåller den befintliga produkten
+        when(repository.findById(id)).thenReturn(Optional.of(product));
 
-        //when anropar findById() med id och returnerar en optional som innehåller den uppdaterade produkten
-        when(repository.findById(id)).thenReturn(Optional.of(updatedProduct));
+        //uppdaterar produkten med en ny titel
+        product.setTitle("Ny titel");
 
         //sparar uppdaterad produkt till databasen
-        when(repository.save(updatedProduct)).thenReturn(updatedProduct);
+        when(repository.save(product)).thenReturn(product);
 
+        Product result = underTest.updateProduct(product, id);
 
-        Product result = underTest.updateProduct(updatedProduct, id);
-
-        // Then:jämför den nya titeln med den förväntade titeln "Dator"
-        assertEquals("Dator", result.getTitle());
+        // Then:jämför den nya titeln med den förväntade titeln "Ny titel"
+        assertEquals("Ny titel", result.getTitle());
     }
 
 
@@ -279,8 +283,8 @@ class ProductServiceTest {
         // When
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        // then - förväntar oss att en EntityNotFoundException kommer
-        // att kastas när vi försöker uppdatera en produkt som inte finns
+        /* then - förväntar oss att en EntityNotFoundException kommer
+        att kastas när vi försöker uppdatera en produkt som inte finns */
         assertThrows(EntityNotFoundException.class, () -> {
             underTest.updateProduct(new Product(), id);
         });
