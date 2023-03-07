@@ -159,6 +159,7 @@ class ProductServiceTest {
         //given
         Product product = new Product("En mobil", 33.33,"elektronik", "mobiltelefon", "tom");
         product.setId(1);
+
         when(repository.findById(1)).thenReturn(Optional.of(product));
 
         //when
@@ -292,9 +293,9 @@ class ProductServiceTest {
         // Given skapar en produkt med id 1
         Integer id = 1;
         Product product = new Product();
-        when(repository.findById(id)).thenReturn(Optional.of(product));
 
         // When anropar vi deleteProduct-metoden.
+        when(repository.findById(id)).thenReturn(Optional.of(product));
         underTest.deleteProduct(id);
 
         // Then verifierar vi att deleteById-metoden anropas på repositoryt med id 1 genom att använda verify()-metoden.
@@ -308,9 +309,10 @@ class ProductServiceTest {
     void testDeleteProductThrowsExceptionWhenProductNotFound() {
         // Given sätter upp ett scenario där en produkt med id 1 inte finns i repositoryn.
         Integer id = 1;
-        when(repository.findById(id)).thenReturn(Optional.empty());
 
         // When anropar deleteProduct-metoden med id 1.
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
         // förväntar oss att metoden kastar en EntityNotFoundException.
         assertThrows(EntityNotFoundException.class, () -> {
             underTest.deleteProduct(id);
